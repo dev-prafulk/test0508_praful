@@ -34,6 +34,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { HttpClientModule } from '@angular/common/http';
 
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { taskReducer } from 'src/app/shared/store-ngrx/task.reducer';
+import { TaskEffects } from 'src/app/shared/store-ngrx/task.effects';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,8 +71,11 @@ import { HttpClientModule } from '@angular/common/http';
     DialogModule,
     MatDialogModule,
     TabViewModule,
+    BrowserAnimationsModule,
 
-    BrowserAnimationsModule
+    StoreModule.forRoot({ tasks: taskReducer }),
+    EffectsModule.forRoot([TaskEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production })
   ],
   providers: [ TaskService, ProductService ],
   bootstrap: [AppComponent]
