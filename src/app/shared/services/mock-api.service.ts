@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
 export class MockApiService {
-  private apiUrl = 'http://localhost:3000'; // Base URL for API calls
+  private apiUrl = environment.apiUrl; 
 
   private tasksDatabase: any[] = [
     {
@@ -44,8 +46,17 @@ export class MockApiService {
 
   constructor(private http: HttpClient) {}
 
+  // getTasks(): Observable<any[]> {
+  //   return of(this.tasksDatabase);
+  // }
+
   getTasks(): Observable<any[]> {
-    return of(this.tasksDatabase);
+    
+    if (environment.apiUrl == '#') {
+      return of(this.tasksDatabase);
+    } else {
+      return this.http.get<any[]>(`${this.apiUrl}/tasks`);
+    }
   }
 
   createTask(task: any): Observable<any> {
