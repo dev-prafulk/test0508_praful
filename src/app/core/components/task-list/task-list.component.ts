@@ -37,84 +37,23 @@ import { MockApiService } from 'src/app/shared/services/mock-api.service';
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss'],
-
   providers: [MessageService, ConfirmationService]
 })
 export class TaskListComponent {
-
   tasks!: Task[];
-
   statuses!: SelectItem[];
-
-  submitted!: boolean;
-
-  clonedProducts: { [s: string]: any } = {};
   clonedTasks: { [s: string]: any } = {};
   productDialog: boolean = false;
   product: any;
   showAddDialog: boolean =false;
+  taskToEdit: any;
   priorities!: { label: string; value: string; }[];
   editingTaskStatus!: string;
 
-
   constructor(private fb:FormsModule, private messageService: MessageService,private confirmationService: ConfirmationService, private mockApiService: MockApiService) {}
   
-
   ngOnInit() {
-      // this.tasks = [
-      //   {
-      //     "id": "12345",
-      //     "title": "Project Alpha Phase 1",
-      //     "description": "Initial phase of Project Alpha, focusing on research and development.",
-      //     "status": "In Progress",
-      //     "priority": "High",
-      //     "due_date": "2024-12-31",
-      //     "created_at": "2024-08-05T10:00:00Z",
-      //     "updated_at": "2024-08-05T10:30:00Z"
-      //   },
-      //   {
-      //     "id": "212223",
-      //     "title": "Project Eta Phase 7",
-      //     "description": "Seventh phase of Project Eta, aiming for scalability improvements.",
-      //     "status": "Completed",
-      //     "priority": "High",
-      //     "due_date": "2026-04-15",
-      //     "created_at": "2025-03-30T04:00:00Z",
-      //     "updated_at": "2025-04-01T06:00:00Z"
-      //   },
-      //   {
-      //     "id": "232425",
-      //     "title": "Project Theta Phase 8",
-      //     "description": "Eighth phase of Project Theta, focusing on security enhancements.",
-      //     "status": "On Hold",
-      //     "priority": "Medium",
-      //     "due_date": "2026-07-20",
-      //     "created_at": "2025-05-05T07:00:00Z",
-      //     "updated_at": "2025-05-07T09:00:00Z"
-      //   },
-      //   {
-      //     "id": "252627",
-      //     "title": "Project Iota Phase 9",
-      //     "description": "Ninth phase of Project Iota, emphasizing data analytics integration.",
-      //     "status": "In Review",
-      //     "priority": "Low",
-      //     "due_date": "2026-10-25",
-      //     "created_at": "2025-06-20T10:00:00Z",
-      //     "updated_at": "2025-06-22T12:00:00Z"
-      //   },
-      //   {
-      //     "id": "262728",
-      //     "title": "Project Kappa Phase 10",
-      //     "description": "Tenth phase of Project Kappa, dedicated to launching the final product version.",
-      //     "status": "Not Started",
-      //     "priority": "High",
-      //     "due_date": "2027-01-31",
-      //     "created_at": "2025-07-15T13:00:00Z",
-      //     "updated_at": "2025-07-17T15:00:00Z"
-      //   }
-      // ]
       this.fetchTasks();
-
 
       this.statuses = [
           { label: 'To Do', value: 'Not Started' },
@@ -143,15 +82,8 @@ export class TaskListComponent {
         }
         this.editingTaskStatus = task.status;
 
-      //     this.mockApiService.updateTask(task.id.toString(), task).subscribe(() => {
-      //       this.fetchTasks();      
-      // })
     }
 
-    // onRowEditSave(item: any) {
-    //       delete this.clonedTasks[item.id];
-    //         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task is updated' });
-    // }
     onRowEditSave(task: any) {
       this.mockApiService.updateTask(task.id.toString(), task).subscribe(() => {
         this.fetchTasks();  // Refresh the task list after update
@@ -165,45 +97,12 @@ export class TaskListComponent {
     }
 
     
-    hideDialog() {
-      // this.productDialog = false;
-      // this.submitted = false;
-    }
-
-  
-    saveProduct() {
-    }  
-    
     openNew() {
-      // this.product = {};
-      this.submitted = false;
-      this.productDialog = true;
+      this.taskToEdit = null;
       this.showAddDialog = true;
   }
 
-  
-  // getSeverity(status: string) {
-  //   switch (status) {
-  //           case 'INSTOCK':
-  //               return 'success';
-  //           case 'LOWSTOCK':
-  //               return 'warning';
-  //           case 'OUTOFSTOCK':
-  //               return 'danger';
-  //       }
-  // }
-
-
-  
-  editProduct(product: any) {
-    this.product = { ...product };
-      this.productDialog = true;
-  }
-
-  
-  deleteProduct(item: any) {
-      console.log("item========", item);
-      
+  deleteProduct(item: any) {      
       this.confirmationService.confirm({
           message: 'Are you sure you want to delete ' + item.title + '?',
           header: 'Confirm',
@@ -216,7 +115,6 @@ export class TaskListComponent {
       });
   }
 
-  
   updateTaskList(): void {
     this.fetchTasks();
     this.showAddDialog = false
@@ -232,6 +130,15 @@ export class TaskListComponent {
     
   onEditComplete(task: any) {
     task.status = this.editingTaskStatus;
+  }
+
+  editTask(task: any): void {    
+    this.taskToEdit = task;
+    this.showAddDialog = true;
+  }
+
+  handleDialogClose(): void {
+    this.showAddDialog = false;
   }
 
 }

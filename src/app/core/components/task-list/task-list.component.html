@@ -12,8 +12,9 @@
     </ng-template>
 </p-toolbar>
 
-<app-task-form [visible]="showAddDialog" (taskAdded)="updateTaskList()"></app-task-form>
-
+<!-- <app-task-form [visible]="showAddDialog" (taskAdded)="updateTaskList()"></app-task-form> -->
+<app-task-form [visible]="showAddDialog" [taskToEdit]="taskToEdit" (taskAdded)="updateTaskList()" 
+(closeDialog)="handleDialogClose()"></app-task-form>
 <div class="card">
     <p-toast></p-toast>
     <p-table [value]="tasks" dataKey="id" editMode="row" [tableStyle]="{'min-width': '50rem'}" >
@@ -52,19 +53,7 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <!-- <td>
-                    <p-cellEditor>
-                        <ng-template pTemplate="input">
-                            <p-dropdown [options]="statuses" appendTo="body" [(ngModel)]="task.status" [style]="{'width':'100%'}"></p-dropdown>
-                        </ng-template>
-                        <ng-template pTemplate="output">
-                            {{task.status}}
-                        </ng-template>
-                    </p-cellEditor>
-                </td> -->
-
-
-
+                
                 <td>
                     <p-cellEditor>
                       <ng-template pTemplate="input">
@@ -132,22 +121,17 @@
                 </td> -->
                 <td>
                     <div class="flex align-items-center justify-content-center gap-2">
-                        <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(task)" class="p-button-rounded p-button-text"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(task)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
-                        <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(task, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
-
+                            <!-- <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(task)" class="p-button-rounded p-button-text"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(task)" class="p-button-rounded p-button-text p-button-success mr-2"></button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(task, ri)" class="p-button-rounded p-button-text p-button-danger"></button> -->
                         
-                    <!-- <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProduct(product)"></button> -->
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editTask(task)"></button>
                     <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(task)"></button>
-
                 </div>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </div>
-
-
-
 
 <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

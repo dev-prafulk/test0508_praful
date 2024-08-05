@@ -1,16 +1,6 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { MockApiService } from 'src/app/shared/services/mock-api.service';
-
-import {MatButtonModule} from '@angular/material/button';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-} from '@angular/material/dialog';
-import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 
 @Component({
   selector: 'app-task-form',
@@ -19,24 +9,22 @@ import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 })
 export class TaskFormComponent {
 
-  constructor(private fb: FormBuilder, private mockApiService: MockApiService) {}
+  @Input() visible: boolean = false;
+  @Input() taskToEdit: any | null = null;
+  @Output() taskAdded = new EventEmitter<void>();
+  @Output() closeDialog = new EventEmitter<void>();
   
-
-    // @Output() dialogClosed = new EventEmitter<void>();
-
-    @Output() taskAdded = new EventEmitter<void>();
-
-    @Input() visible: boolean = false;
-
-    showDialog() {
-        this.visible = true;
-    }
-
+  showAddDialog: boolean = false;
 
   taskForm!: FormGroup;
-  // taskModel: TaskModel = new TaskModel();
+
+  constructor(private fb: FormBuilder, private mockApiService: MockApiService) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  private initializeForm(): void {
     this.taskForm = this.fb.group({
       id: [''],
       title: ['', Validators.required],
@@ -48,30 +36,51 @@ export class TaskFormComponent {
   }
 
 
-  onSubmit(): void {
-    if (this.taskForm.valid) {
-      const newTask = this.taskForm.value;
-      this.mockApiService.createTask(newTask).subscribe(() => {
-        this.taskAdded.emit(); // Notify parent component
-        this.taskForm.reset();
-        this.fetchTasks();
-      }, error => {
-        console.error('Failed to add task:', error);
-      });
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['taskToEdit']) {
+      if (this.taskForm) {
+        if (this.taskToEdit) {
+          this.taskForm.patchValue(this.taskToEdit);
+        } else {
+          this.taskForm.reset();
+          this.taskForm.patchValue({
+            id: '',
+            title: '',
+            description: '',
+            status: '',
+            priority: '',
+            due_date: ''
+          });
+        }
+      }
     }
   }
 
-
-  handleDialogClose(){
-    // this.dialogClosed.emit();
-
+  handleDialogClose(): void {
+    this.closeDialog.emit();
   }
 
-  
-  fetchTasks(): void {
-    this.mockApiService.getTasks().subscribe((tasks: any) => {
-      console.log("tasks------------------", tasks);
-      
-    });
+  onSubmit(): void {
+    if (this.taskForm.valid) {
+      const taskData = this.taskForm.value;
+      if (this.taskToEdit) {
+        // Update existing task
+        this.mockApiService.updateTask(taskData.id, taskData).subscribe(() => {
+          this.taskAdded.emit(); 
+          this.visible = false;
+        }, error => {
+          console.error('Failed to update task:', error);
+        });
+      } else {
+        // Add new task
+        this.mockApiService.createTask(taskData).subscribe(() => {
+          this.taskAdded.emit(); // Notify parent component
+          this.visible = false;
+        }, error => {
+          console.error('Failed to add task:', error);
+        });
+      }
+    }
   }
+
 }
