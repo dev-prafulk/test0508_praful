@@ -8,7 +8,7 @@
 <p-toast></p-toast>
 <p-toolbar styleClass="mb-4 gap-2">
     <ng-template pTemplate="right">
-        <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+        <button pButton pRipple label="Add New Task" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
     </ng-template>
 </p-toolbar>
 
@@ -21,11 +21,11 @@
             <tr>
                 <th pSortableColumn="id"  style="width:10%">ID <p-sortIcon field="id"></p-sortIcon></th>
                 <th pSortableColumn="title"  style="width:20%">Title <p-sortIcon field="title"></p-sortIcon></th>
-                <th pSortableColumn="status" style="width:10%">Status <p-sortIcon field="status"></p-sortIcon></th>
-                <th pSortableColumn="priority" style="width:10%">Priority <p-sortIcon field="priority"></p-sortIcon></th>
+                <th pSortableColumn="status" style="width:15%">Status <p-sortIcon field="status"></p-sortIcon></th>
+                <th pSortableColumn="priority" style="width:15%">Priority <p-sortIcon field="priority"></p-sortIcon></th>
                 <th style="width:20%">Description</th>
                 <th pSortableColumn="due_date"  style="width:15%">Due Date <p-sortIcon field="due_date"></p-sortIcon></th>
-                <th pSortableColumn="created_at" style="width:15%">Created At <p-sortIcon field="created_at"></p-sortIcon></th>
+                <!-- <th pSortableColumn="created_at" style="width:15%">Created At <p-sortIcon field="created_at"></p-sortIcon></th> -->
                 <!-- <th pSortableColumn="updated_at" style="width:15%">Updated At <p-sortIcon field="updated_at"></p-sortIcon></th> -->
                 <th style="width:15%">Action</th>
             </tr>
@@ -52,7 +52,7 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td>
+                <!-- <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
                             <p-dropdown [options]="statuses" appendTo="body" [(ngModel)]="task.status" [style]="{'width':'100%'}"></p-dropdown>
@@ -61,7 +61,23 @@
                             {{task.status}}
                         </ng-template>
                     </p-cellEditor>
-                </td>
+                </td> -->
+
+
+
+                <td>
+                    <p-cellEditor>
+                      <ng-template pTemplate="input">
+                        <select  [(ngModel)]="task.status" (change)="onEditComplete(task)">
+                          <option *ngFor="let status of statuses" [value]="status.value">{{status.label}}</option>
+                        </select>
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                        {{task.status}}
+                      </ng-template>
+                    </p-cellEditor>
+                  </td>
+                              
 
                 <td>
                     <p-cellEditor>
@@ -94,7 +110,7 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td>
+                <!-- <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">
                             <input pInputText type="date" [(ngModel)]="task.created_at">
@@ -103,7 +119,7 @@
                             {{task.created_at | date:'short'}}
                         </ng-template>
                     </p-cellEditor>
-                </td>
+                </td> -->
                 <!-- <td>
                     <p-cellEditor>
                         <ng-template pTemplate="input">

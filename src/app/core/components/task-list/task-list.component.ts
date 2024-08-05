@@ -54,6 +54,7 @@ export class TaskListComponent {
   product: any;
   showAddDialog: boolean =false;
   priorities!: { label: string; value: string; }[];
+  editingTaskStatus!: string;
 
 
   constructor(private fb:FormsModule, private messageService: MessageService,private confirmationService: ConfirmationService, private mockApiService: MockApiService) {}
@@ -116,7 +117,7 @@ export class TaskListComponent {
 
 
       this.statuses = [
-          { label: 'To DO', value: 'Not Started' },
+          { label: 'To Do', value: 'Not Started' },
           { label: 'In Progress', value: 'In Progress' },
           { label: 'Completed', value: 'Completed' }
       ];
@@ -129,6 +130,7 @@ export class TaskListComponent {
 
   }
 
+  
   fetchTasks(): void {
     this.mockApiService.getTasks().subscribe((tasks: Task[]) => {
       this.tasks = tasks;
@@ -139,16 +141,24 @@ export class TaskListComponent {
         if(this.clonedTasks){
           this.clonedTasks[task.id] = { ...task };
         }
-          this.mockApiService.updateTask(task.id.toString(), task).subscribe(() => {
-            this.fetchTasks();      
-      })
+        this.editingTaskStatus = task.status;
+
+      //     this.mockApiService.updateTask(task.id.toString(), task).subscribe(() => {
+      //       this.fetchTasks();      
+      // })
     }
 
-    onRowEditSave(item: any) {
-          delete this.clonedTasks[item.id];
-            this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task is updated' });
+    // onRowEditSave(item: any) {
+    //       delete this.clonedTasks[item.id];
+    //         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task is updated' });
+    // }
+    onRowEditSave(task: any) {
+      this.mockApiService.updateTask(task.id.toString(), task).subscribe(() => {
+        this.fetchTasks();  // Refresh the task list after update
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Task is updated' });
+      });
     }
-
+    
     onRowEditCancel(product: any, index: number) {        
         this.tasks[index] = this.clonedTasks[product.id];
         delete this.clonedTasks[product.id];
@@ -210,6 +220,18 @@ export class TaskListComponent {
   updateTaskList(): void {
     this.fetchTasks();
     this.showAddDialog = false
+  }
+
+  getTaskStatus(task: any): string {
+    return task.status ? task.status.toString() : '';
+  }
+  
+  setTaskStatus(task: any, value: string) {
+    task.status = value;
+  }
+    
+  onEditComplete(task: any) {
+    task.status = this.editingTaskStatus;
   }
 
 }

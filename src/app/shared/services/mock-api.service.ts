@@ -60,7 +60,12 @@ export class MockApiService {
   }
 
   createTask(task: any): Observable<any> {
-    task.id = Math.floor(Math.random() * 10000);
+
+    const currentDate = new Date().toISOString();
+    task.created_at = currentDate;
+    task.updated_at = currentDate;
+
+    task.id = Math.floor(Math.random() * 1000);
     this.tasksDatabase = [...this.tasksDatabase, task];
     return of(task);
   }
@@ -68,18 +73,19 @@ export class MockApiService {
   getTaskById(id: string): Observable<any> {
     // Find the task in tasksDatabase by its ID
     const task = this.tasksDatabase.find((task) => task.id === id);
-
     // Return the found task wrapped in an Observable
     return of(task);
   }
 
   updateTask(id: string, updatedTask: any): Observable<any> {
+    
     const index = this.tasksDatabase.findIndex((task) => task.id === id);
     if (index !== -1) {
-      this.tasksDatabase[index] = updatedTask;
+      this.tasksDatabase[index] = { ...updatedTask, updated_at: new Date().toISOString() };
     }
-    return of(updatedTask);
+    return of(this.tasksDatabase[index]);
   }
+  
 
   deleteTask(id: string): Observable<any> {
     this.tasksDatabase = this.tasksDatabase.filter((task) => task.id !== id); // Remove the task
