@@ -1,36 +1,10 @@
-// import { Component } from '@angular/core';
-// import { TaskService } from 'src/app//shared/tasklist';
-// import { Task } from 'src/app/shared/enum/task';
-// import { MessageService, SelectItem } from 'primeng/api';
-
-// @Component({
-//   selector: 'app-task-list',
-//   templateUrl: './task-list.component.html',
-//   styleUrls: ['./task-list.component.scss']
-// })
-// export class TaskListComponent {
-
-//   tasks!: Task[];
-
-//   constructor(private taskService: TaskService) {}
-
-//   ngOnInit() {
-//     this.taskService.getTasksMini().then((data) => {
-//           this.tasks = data;
-//       });
-//   }
-
-// }
-
-
 import { Component } from '@angular/core';
-import { TaskService } from 'src/app//shared/tasklist';
 import { Task } from 'src/app/shared/enum/task';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 
-import { MockApiService } from 'src/app/shared/services/mock-api.service';
+import { MockApiService } from 'src/app/services/mock-api.service';
 
 
 @Component({
@@ -49,6 +23,8 @@ export class TaskListComponent {
   taskToEdit: any;
   priorities!: { label: string; value: string; }[];
   editingTaskStatus!: string;
+  isTaskDetailsVisible: boolean = false; 
+  taskDetails: any;
 
   constructor(private fb:FormsModule, private messageService: MessageService,private confirmationService: ConfirmationService, private mockApiService: MockApiService) {}
   
@@ -135,6 +111,12 @@ export class TaskListComponent {
   editTask(task: any): void {    
     this.taskToEdit = task;
     this.showAddDialog = true;
+  }
+
+
+  viewTask(task: any): void {    
+    this.isTaskDetailsVisible = !this.isTaskDetailsVisible; 
+    this.taskDetails = task;
   }
 
   handleDialogClose(): void {

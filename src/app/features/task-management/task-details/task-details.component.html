@@ -1,0 +1,44 @@
+
+<div class="card flex justify-content-center">
+    <p-card header="Task Details">
+        <table class="table">
+            <tbody>
+              <tr>
+                <td>Title</td>
+                <td>{{ taskDetails.title }}</td>
+              </tr>
+              <tr>
+                <td>Description</td>
+                <td>{{ taskDetails.description }}</td>
+              </tr>
+              <tr>
+                <td>Status</td>
+                <td>{{ taskDetails.status }}</td>
+              </tr>
+              <tr>
+                <td>Priority</td>
+                <td>{{ taskDetails.priority }}</td>
+              </tr>
+              <tr>
+                <td>Assignee</td>
+                <td>{{ taskDetails.due_date | date }}</td>
+              </tr>
+              
+              <tr>
+                <td>Due Date</td>
+                <td>{{ taskDetails.due_date | date }}</td>
+              </tr>
+              
+              <tr>
+                <td>Assignee</td>
+                <td>
+                    <select [(ngModel)]="assignee" (change)="onAssigneeChange($event)">
+                        <option *ngFor="let user of users" [value]="user">{{ user.name }}</option>
+                    </select>                                                                 
+                </td>         
+              </tr>
+
+            </tbody>
+          </table>
+    </p-card>
+</div>

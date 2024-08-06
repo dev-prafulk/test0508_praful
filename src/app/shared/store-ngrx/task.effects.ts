@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { MockApiService } from 'src/app/shared/services/mock-api.service';
+import { MockApiService } from 'src/app/services/mock-api.service';
 import * as TaskActions from './task.actions';
 
 @Injectable()

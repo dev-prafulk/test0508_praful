@@ -18,7 +18,7 @@ export class MockApiService {
       status: 'In Progress',
       priority: 'High',
       due_date: '2024-08-31',
-      created_at: '2024-01-01T00:00:00Z',
+      created_at: '2024-08-08T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
     },
     {
@@ -28,7 +28,7 @@ export class MockApiService {
       status: 'Completed',
       priority: 'Low',
       due_date: '2024-12-31',
-      created_at: '2024-01-01T00:00:00Z',
+      created_at: '2024-08-08T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
     },
     {
@@ -38,12 +38,70 @@ export class MockApiService {
       status: 'Not Started',
       priority: 'Medium',
       due_date: '2024-09-31',
-      created_at: '2024-01-01T00:00:00Z',
+      created_at: '2024-08-08T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
     },
-    // Add more tasks as needed
+    {
+      id: '41',
+      title: 'Task 41',
+      description: 'Description for Task 41',
+      status: 'Not Started',
+      priority: 'Medium',
+      due_date: '2024-09-31',
+      created_at: '2024-08-08T00:00:00Z',
+      updated_at: '2024-08-02T00:00:00Z',
+    },
+    {
+      id: '52',
+      title: 'Task 52',
+      description: 'Description for Task 52',
+      status: 'Not Started',
+      priority: 'Medium',
+      due_date: '2024-09-31',
+      created_at: '2024-08-08T00:00:00Z',
+      updated_at: '2024-08-02T00:00:00Z',
+    },
   ];
 
+  private usersDatabase: any[] = [
+    {
+      id: 1,
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      role: 'Admin',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      email: 'jane.smith@example.com',
+      role: 'User',
+    },
+    {
+      id: 3,
+      name: 'Roy Smith',
+      email: 'roy.smith@example.com',
+      role: 'User',
+    },
+  ];
+
+  private taskAssignmentsDatabase: any[] = [
+    {
+      id: '1',
+      taskId: '1',
+      userId: '1',
+      title: 'Task 1',
+      assignedAt: '2024-08-15T00:00:00Z',
+    },
+    {
+      id: '2',
+      taskId: '2',
+      userId: '2',
+      title: 'Task 2',
+      assignedAt: '2024-08-16T00:00:00Z',
+    },
+  ];
+
+  
   constructor(private http: HttpClient) {}
 
   // getTasks(): Observable<any[]> {
@@ -135,5 +193,47 @@ export class MockApiService {
     return of({
       progress: 75.5,
     });
+  }
+
+  
+  getUser(userId: string): Observable<any> {
+    const user = this.usersDatabase.find((user) => user.id == userId);
+    return of(user);
+  }
+
+  addTaskAssignment(taskId: string, userId: string, title: string, description: string): Observable<any> {
+    const currentDate = new Date().toISOString();
+    const newAssignment = {
+      id: `a${Math.floor(Math.random() * 1000)}`, // Generate a unique ID for the assignment
+      taskId,
+      userId,
+      title,
+      description,
+      assignedAt: currentDate,
+    };
+  
+    this.taskAssignmentsDatabase.push(newAssignment);
+    return of(newAssignment);
+  }
+
+  listTaskAssignments(): Observable<any[]> {
+    return of(this.taskAssignmentsDatabase);
+  }
+
+
+  
+  getUsers(): Observable<any[]> {
+    return of(this.usersDatabase);
+  }
+
+  getTaskAssignmentsByTaskId(taskId: string): Observable<any[]> {
+    // Filter the task assignments based on the provided taskId
+    const filteredAssignments = this.taskAssignmentsDatabase.filter(assignment => assignment.taskId === taskId);
+    return of(filteredAssignments);
+  }
+
+  
+  updateAssignee(taskId: string, assignment: any): Observable<any> {
+    return of(assignment);
   }
 }

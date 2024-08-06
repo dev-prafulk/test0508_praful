@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MockApiService } from 'src/app/shared/services/mock-api.service';
+import { MockApiService } from 'src/app/services/mock-api.service';
 
 @Component({
   selector: 'app-task-form',
